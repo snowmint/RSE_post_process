@@ -15,22 +15,22 @@ Need to download validation data and model data
 * If wav file is not clear audio, then use this program to run denoising process and get tempo
    * Input: wav file
    * Output: denoised wav file
-   * `python execute_all_preprocessing.py --input piano_ver_Pneumatic`
+   * `python execute_all_preprocessing.py --input <filename>`
 
 
 * Turn wav into npy
     * Input: wav file
     * Output: npy file
-    * `python make_dataset.py --input piano_ver_Pneumatic_reduction`
+    * `python make_dataset.py --input <filename>_reduction`
 
 
 * Produce visualisation.npy
     * Input: npy file
     * output: npy file for visualization
-    * `python visualiser.py --input piano_ver_Pneumatic_reduction`
+    * `python visualiser.py --input <filename>_reduction` or `python visualiser.py --input <filename>`
 
 * Produce visualisation.npy
     * Input: npy file
     * output: midi file (final result)
-    * `python show_visualisation.py --input piano_ver_Pneumatic_reduction_visualisation`
+    * `python show_visualisation.py --input <filename>_reduction_visualisation` or `python show_visualisation.py --input <filename>_visualisation`
 
