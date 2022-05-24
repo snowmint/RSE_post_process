@@ -1,0 +1,17 @@
+python execute_all_preprocessing.py --input piano_ver_Pneumatic #denoising and get tempo
+
+python make_dataset.py --input piano_ver_Pneumatic_reduction #wav->npy
+
+python visualiser.py --input piano_ver_Pneumatic_reduction #output visualisation.npy
+
+python show_visualisation.py --input piano_ver_Pneumatic_reduction_visualisation
+
+=======================================================================================
+
+python execute_all_preprocessing.py --input 20211213-00 #denoising and get tempo
+
+python make_dataset.py --input 20211213-00 #wav->npy
+
+python visualiser.py --input 20211213-00 #output visualisation.npy
+
+python show_visualisation.py --input 20211213-00_visualisation
