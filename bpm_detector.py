@@ -81,7 +81,7 @@ def bpm_detector(data, fs):
 
         # 6) Recombine the signal before ACF
         #    Essentially, each level the detail coefs (i.e. the HPF values) are concatenated to the beginning of the array
-        cD_sum = cD[0 : math.floor(cD_minlen)] + cD_sum
+        cD_sum = cD[0: math.floor(cD_minlen)] + cD_sum
 
     if [b for b in cA if b != 0.0] == []:
         return no_audio_data()
@@ -90,7 +90,7 @@ def bpm_detector(data, fs):
     cA = signal.lfilter([0.01], [1 - 0.99], cA)
     cA = abs(cA)
     cA = cA - numpy.mean(cA)
-    cD_sum = cA[0 : math.floor(cD_minlen)] + cD_sum
+    cD_sum = cA[0: math.floor(cD_minlen)] + cD_sum
 
     # ACF
     correl = numpy.correlate(cD_sum, cD_sum, "full")
@@ -103,22 +103,32 @@ def bpm_detector(data, fs):
 
     peak_ndx_adjusted = peak_ndx[0] + min_ndx
     bpm = 60.0 / peak_ndx_adjusted * (fs / max_decimation)
-    print(bpm)
+    if args.visualize != 0:
+        print(bpm)
     return bpm, correl
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process .wav file to determine the Beats Per Minute.")
-    parser.add_argument("--filename", required=True, help=".wav file for processing")
+    parser = argparse.ArgumentParser(
+        description="Process .wav file to determine the Beats Per Minute.")
+    parser.add_argument("--filename", required=True,
+                        help=".wav file for processing")
     parser.add_argument(
         "--window",
         type=float,
         default=3,
         help="Size of the the window (seconds) that will be scanned to determine the bpm. Typically less than 10 seconds. [3]",
     )
+    parser.add_argument(
+        "--visualize",
+        type=int,
+        default=0,
+        help="Visualize",
+    )
 
     args = parser.parse_args()
-    print("args.filename", args.filename)
+    if args.visualize != 0:
+        print("args.filename", args.filename)
     samps, fs = read_wav(str(args.filename))
     data = []
     correl = []
@@ -135,7 +145,7 @@ if __name__ == "__main__":
 
         # Get a new set of samples
         # print(n,":",len(bpms),":",max_window_ndx_int,":",fs,":",nsamps,":",samps_ndx)
-        data = samps[samps_ndx : samps_ndx + window_samps]
+        data = samps[samps_ndx: samps_ndx + window_samps]
         if not ((len(data) % window_samps) == 0):
             raise AssertionError(str(len(data)))
 
@@ -152,8 +162,11 @@ if __name__ == "__main__":
         n = n + 1
 
     bpm = numpy.median(bpms)
-    print("Completed!  Estimated Beats Per Minute:", bpm)
+    if args.visualize != 0:
+        print("Completed!  Estimated Beats Per Minute:", bpm)
 
     n = range(0, len(correl))
-    plt.plot(n, abs(correl))
-    plt.show(block=True)
+    if args.visualize != 0:
+        plt.plot(n, abs(correl))
+        plt.show(block=True)
+    print("&@OK@&")

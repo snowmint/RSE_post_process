@@ -1,2 +1,4 @@
 *.npy
 *.ilc
+*.wav
+*.mid

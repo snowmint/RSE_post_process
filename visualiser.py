@@ -21,15 +21,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input",
                     type=str,
                     help="The input wav file's path")
+parser.add_argument("--visualize",
+                    type=int,
+                    default=0,
+                    help="1. show the output, 0. don't show any output")
 args = parser.parse_args()
 
 
 def prepare_data_for_test():
     data_gen.init()
     task = data_gen.find_data_task(cnf.task)
-    task.prepare_visualisation_data()
-    # print("準備：", "./" + str(args.input) + ".npy")
-    # task.prepare_visualisation_data("./" + str(args.input) + ".npy")
+    # task.prepare_visualisation_data()
+    print("準備：", str(args.input) + ".npy")
+    task.prepare_inference_data(str(args.input) + ".npy")
     data_gen.collect_bins()
     data_gen.print_bin_usage()
 
@@ -60,11 +64,14 @@ def run_visualiser_musicnet():
                 # rounds it up to the next size divisible by batch size:
                 n_test_inputs = (full_test_len // BATCH_SIZE) * \
                     BATCH_SIZE + BATCH_SIZE
-                print("Testing on {} test inputs: ".format(n_test_inputs), end="")
+
+                print("Testing on {} test inputs: ".format(
+                    n_test_inputs), end="")
                 threshold = 0
                 for i in range(n_test_inputs // BATCH_SIZE):
                     if i > threshold:
-                        print("{},".format(i * BATCH_SIZE), end="", flush=True)
+                        print("{},".format(i * BATCH_SIZE),
+                              end="", flush=True)
                         threshold += 1000 // BATCH_SIZE
                     batch_xs, batch_ys = data_supplier.supply_test_data(
                         test_length, BATCH_SIZE)
@@ -88,12 +95,13 @@ def run_visualiser_musicnet():
                     labels = labels[:-(128 * n_overshoot)]
 
                 avg_prec_score = average_precision_score(labels, predictions)
-                print("\n")
-                print("Cutting {} input duplicates".format(n_overshoot))
-                print("Done testing on all {} test inputs".format(
-                    len(labels) / 128))
-                print("AVERAGE PRECISION SCORE on all test data = {0:.7f}".format(
-                    avg_prec_score))
+                if args.visualize != 0:
+                    print("\n")
+                    print("Cutting {} input duplicates".format(n_overshoot))
+                    print("Done testing on all {} test inputs".format(
+                        len(labels) / 128))
+                    print("AVERAGE PRECISION SCORE on all test data = {0:.7f}".format(
+                        avg_prec_score))
 
                 # preparing the visualisation data:
                 t_probe_start = 128 * 0
@@ -117,3 +125,4 @@ def create_tester(test_length):
 
 if __name__ == '__main__':
     run_visualiser_musicnet()
+    print("&@OK@&")

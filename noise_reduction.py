@@ -6,7 +6,7 @@ import librosa
 
 import time
 from datetime import timedelta as td
-#python noise_reduction.py --input ./piano_ver_Pneumatic.wav --output ./piano_ver_Pneumatic_reduction.wav
+# python noise_reduction.py --input ./piano_ver_Pneumatic.wav --output ./piano_ver_Pneumatic_reduction.wav
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--input",
@@ -15,15 +15,20 @@ parser.add_argument("--input",
 parser.add_argument("--output",
                     type=str,
                     help="The output wav file's path")
+parser.add_argument("--visualize",
+                    type=int,
+                    default=0,
+                    help="1. show the output, 0. don't show any output")
 args = parser.parse_args()
+
 
 def fftnoise(f):
     f = np.array(f, dtype="complex")
     Np = (len(f) - 1) // 2
     phases = np.random.rand(Np) * 2 * np.pi
     phases = np.cos(phases) + 1j * np.sin(phases)
-    f[1 : Np + 1] *= phases
-    f[-1 : -1 - Np : -1] = np.conj(f[1 : Np + 1])
+    f[1: Np + 1] *= phases
+    f[-1: -1 - Np: -1] = np.conj(f[1: Np + 1])
     return np.fft.ifft(f).real
 
 
@@ -32,6 +37,7 @@ def band_limited_noise(min_freq, max_freq, samples=1024, samplerate=1):
     f = np.zeros(samples)
     f[np.logical_and(freqs >= min_freq, freqs <= max_freq)] = 1
     return fftnoise(f)
+
 
 def _stft(y, n_fft, hop_length, win_length):
     return librosa.stft(y=y, n_fft=n_fft, hop_length=hop_length, win_length=win_length)
@@ -50,34 +56,37 @@ def _db_to_amp(x,):
 
 
 def plot_spectrogram(signal, title):
-    fig, ax = plt.subplots(figsize=(20, 4))
-    cax = ax.matshow(
-        signal,
-        origin="lower",
-        aspect="auto",
-        cmap=plt.cm.seismic,
-        vmin=-1 * np.max(np.abs(signal)),
-        vmax=np.max(np.abs(signal)),
-    )
-    fig.colorbar(cax)
-    ax.set_title(title)
-    plt.tight_layout()
-    plt.show()
+    if args.visualize != 0:
+        fig, ax = plt.subplots(figsize=(20, 4))
+        cax = ax.matshow(
+            signal,
+            origin="lower",
+            aspect="auto",
+            cmap=plt.cm.seismic,
+            vmin=-1 * np.max(np.abs(signal)),
+            vmax=np.max(np.abs(signal)),
+        )
+        fig.colorbar(cax)
+        ax.set_title(title)
+        plt.tight_layout()
+        plt.show()
 
 
 def plot_statistics_and_filter(
     mean_freq_noise, std_freq_noise, noise_thresh, smoothing_filter
 ):
-    fig, ax = plt.subplots(ncols=2, figsize=(20, 4))
-    plt_mean, = ax[0].plot(mean_freq_noise, label="Mean power of noise")
-    plt_std, = ax[0].plot(std_freq_noise, label="Std. power of noise")
-    plt_std, = ax[0].plot(noise_thresh, label="Noise threshold (by frequency)")
-    ax[0].set_title("Threshold for mask")
-    ax[0].legend()
-    cax = ax[1].matshow(smoothing_filter, origin="lower")
-    fig.colorbar(cax)
-    ax[1].set_title("Filter for smoothing Mask")
-    plt.show()
+    if args.visualize != 0:
+        fig, ax = plt.subplots(ncols=2, figsize=(20, 4))
+        plt_mean, = ax[0].plot(mean_freq_noise, label="Mean power of noise")
+        plt_std, = ax[0].plot(std_freq_noise, label="Std. power of noise")
+        plt_std, = ax[0].plot(
+            noise_thresh, label="Noise threshold (by frequency)")
+        ax[0].set_title("Threshold for mask")
+        ax[0].legend()
+        cax = ax[1].matshow(smoothing_filter, origin="lower")
+        fig.colorbar(cax)
+        ax[1].set_title("Filter for smoothing Mask")
+        plt.show()
 
 
 def removeNoise(
@@ -133,7 +142,8 @@ def removeNoise(
         start = time.time()
     # Calculate value to mask dB to
     mask_gain_dB = np.min(_amp_to_db(np.abs(sig_stft)))
-    print(noise_thresh, mask_gain_dB)
+    if args.visualize != 0:
+        print(noise_thresh, mask_gain_dB)
     # Create a smoothing filter for the mask in time and frequency
     smoothing_filter = np.outer(
         np.concatenate(
@@ -162,7 +172,8 @@ def removeNoise(
         print("Masking:", td(seconds=time.time() - start))
         start = time.time()
     # convolve the mask with a smoothing filter
-    sig_mask = scipy.signal.fftconvolve(sig_mask, smoothing_filter, mode="same")
+    sig_mask = scipy.signal.fftconvolve(
+        sig_mask, smoothing_filter, mode="same")
     sig_mask = sig_mask * prop_decrease
     if verbose:
         print("Mask convolution:", td(seconds=time.time() - start))
@@ -209,7 +220,8 @@ rate, data = wavfile.read(wav_loc)
 data = data / 32768
 
 length = data.shape[0] / rate
-print(f"length = {length}s")
+if args.visualize != 0:
+    print(f"length = {length}s")
 
 
 # time = np.linspace(0., length, data.shape[0])
@@ -223,15 +235,18 @@ print(f"length = {length}s")
 # fig, ax = plt.subplots(figsize=(20,4))
 # ax.plot(data)
 
-noise_len = 3 # seconds, pick from input file
+noise_len = 3  # seconds, pick from input file
 noise_clip = data[:rate*noise_len]
-print(data.shape)
-if (len(data.shape) > 1): #stereo wav
-    output = removeNoise(audio_clip=data[:, 1], noise_clip=noise_clip[:, 1], verbose=True, visual=True)
-else: #monophnic wav
-    output = removeNoise(audio_clip=data, noise_clip=noise_clip, verbose=True, visual=True)
+if args.visualize != 0:
+    print(data.shape)
+if (len(data.shape) > 1):  # stereo wav
+    output = removeNoise(
+        audio_clip=data[:, 1], noise_clip=noise_clip[:, 1], verbose=True, visual=True)
+else:  # monophnic wav
+    output = removeNoise(
+        audio_clip=data, noise_clip=noise_clip, verbose=True, visual=True)
 wavfile.write(args.output, rate, output)
-
+print("&@OK@&")
 # from scipy.io import wavfile
 # import noisereduce as nr
 

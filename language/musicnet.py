@@ -53,7 +53,7 @@ class Musicnet(LanguageTask):
             low=0, high=len(loaded) - mmap_window, size=100)
         training_set_tmp = []
         for i in range(100):
-            training_set_tmp += list(loaded[indices[i]                                     :indices[i] + mmap_window])
+            training_set_tmp += list(loaded[indices[i]:indices[i] + mmap_window])
         self.training_set = self.crop(
             np.array(training_set_tmp, dtype='float32'))
         del loaded
@@ -97,11 +97,11 @@ class Musicnet(LanguageTask):
     #     del loaded
     #     data_utils.test_set["musicnet"][self.window_size] = self.testing_set
 
-    # def prepare_visualisation_data(self, testing_data):
-    #     loaded = np.load(self.data_dir + testing_data)
-    #     self.testing_set = self.crop(loaded)
-    #     del loaded
-    #     data_utils.test_set["musicnet"][self.window_size] = self.testing_set
+    def prepare_visualisation_data(self, testing_data):
+        loaded = np.load(self.data_dir + testing_data)
+        self.testing_set = self.crop(loaded)
+        del loaded
+        data_utils.test_set["musicnet"][self.window_size] = self.testing_set
 
     def prepare_test_data(self):
         loaded = np.load(self.data_dir + MUSICNET_TEST)
@@ -109,8 +109,14 @@ class Musicnet(LanguageTask):
         del loaded
         data_utils.test_set["musicnet"][self.window_size] = self.testing_set
 
-    def prepare_visualisation_data(self):
-        loaded = np.load(self.data_dir + MUSICNET_TEST)
+    def prepare_inference_data(self, inference_file_path):
+        loaded = np.load(inference_file_path)
         self.testing_set = self.crop(loaded)
         del loaded
         data_utils.test_set["musicnet"][self.window_size] = self.testing_set
+
+    # def prepare_visualisation_data(self):
+    #     loaded = np.load(self.data_dir + MUSICNET_TEST)
+    #     self.testing_set = self.crop(loaded)
+    #     del loaded
+    #     data_utils.test_set["musicnet"][self.window_size] = self.testing_set
