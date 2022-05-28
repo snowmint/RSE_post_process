@@ -32,7 +32,7 @@ def prepare_data_for_test():
     data_gen.init()
     task = data_gen.find_data_task(cnf.task)
     # task.prepare_visualisation_data()
-    print("準備：", str(args.input) + ".npy")
+    # print("準備：", str(args.input) + ".npy")
     task.prepare_inference_data(str(args.input) + ".npy")
     data_gen.collect_bins()
     data_gen.print_bin_usage()
