@@ -27,6 +27,9 @@ def parser():
                         type = int,
                         default = 0,
                         help = "If your audio file is record from real environment then give 1 to denoising.")
+    parser.add_argument("--output_path",
+                       type=str,
+                       help="The output midi file's folder") #"./output_midi/"
     return parser.parse_args()
 
 
@@ -122,12 +125,12 @@ process4 = None
 if int(args.denoise) == 0:
     # python show_visualisation.py --input piano_ver_Pneumatic_reduction_visualisation
     show_visualisation_cmd = 'python show_visualisation.py ' + \
-        '--input ' + input_filename + '_visualisation'
+        '--input ' + input_filename + '_visualisation'  + ' --output_path ' + args.output_path
     process4 = subprocess.Popen(
         show_visualisation_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
 else:
     show_visualisation_cmd = 'python show_visualisation.py ' + \
-        '--input ' + input_filename + '_reduction_visualisation'
+        '--input ' + input_filename + '_reduction_visualisation' + ' --output_path ' + args.output_path
     process4 = subprocess.Popen(
         show_visualisation_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
 
@@ -146,13 +149,13 @@ end = time.time()
 print("Spend time: ", format(end-start))
 
 if int(args.denoise) == 0:
-    my_file = Path("./" + input_filename + "_visualisation_final.mid")
+    my_file = Path(args.output_path + input_filename + "_visualisation_final.mid")
     if my_file.is_file():
         print("Final output exist!")
     else:
         print("Final output not exist...")
 else:
-    my_file = Path("./" + input_filename + "_reduction_visualisation_final.mid")
+    my_file = Path(args.output_path + input_filename + "_reduction_visualisation_final.mid")
     if my_file.is_file():
         print("Final output exist!")
     else:
