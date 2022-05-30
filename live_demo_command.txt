@@ -1,0 +1,7 @@
+Run Flask:
+python app.py
+
+Run ngrok:
+ngrok http 5000
+
+Make QR-code for test

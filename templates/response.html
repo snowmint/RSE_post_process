@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
+    </head>
+    <body>
+        <p><b>{{ msg }}</b></p>
+        <p style="font-size: 18px;">未經過後處理</p>
+        <midi-player src="../static/{{ output1 }}" sound-font></midi-player>
+        <form method="get" action="../static/{{ output1 }}">
+            <button type="submit">下載 MIDI 檔案</button>
+        </form>
+        </br>
+        <p style="font-size: 18px;">有經過後處理</p>
+        <midi-player src="../static/{{ output2 }}" sound-font></midi-player>
+        <form method="get" action="../static/{{ output2 }}">
+            <button type="submit">下載 MIDI 檔案</button>
+        </form>
+    </body>
+</html>

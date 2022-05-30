@@ -22,8 +22,8 @@ parser.add_argument("--visualize",
                     default=0,
                     help="1. show the output, 0. don't show any output")
 parser.add_argument("--output_path",
-                   type=str,
-                   help="The output midi file's folder") #"./output_midi/"
+                    type=str,
+                    help="The output midi file's folder")  # "./output_midi/"
 args = parser.parse_args()
 
 
@@ -64,7 +64,8 @@ prepare_for_midi2 = vls[:, :, 0]
 prepare_for_midi_binary2 = np.where(prepare_for_midi > 0.1, 1, 0)
 track = pypianoroll.BinaryTrack(pianoroll=prepare_for_midi_binary2)
 multi_track = pypianoroll.Multitrack(tracks=[track])
-pypianoroll.write("./" + args.input + "_no_post.mid", multi_track)
+pypianoroll.write(args.output_path + args.input +
+                  "_no_post.mid", multi_track)
 
 
 # apply smoothing (smoothing , sobel smoothing, mean value differntial)######################
@@ -222,5 +223,5 @@ if args.visualize != 0:
 vls = np.load("./" + args.input + ".npy")
 track = pypianoroll.BinaryTrack(pianoroll=post_processing_diff.T)
 multi_track = pypianoroll.Multitrack(tracks=[track])
-pypianoroll.write( args.output_path + args.input + "_final.mid", multi_track)
+pypianoroll.write(args.output_path + args.input + "_final.mid", multi_track)
 print("&@OK@&")
