@@ -401,7 +401,7 @@ class RSE:
                 pred_flat = tf.reshape(self.result, [-1])
                 labels_flat = tf.reshape(self.test_y[:, :128] - 1, [-1])  # gets 0/1 labels on 128 notes without padding
                 pred_flat = tf.clip_by_value(pred_flat, 0.0, 1.0)
-                roc, update_op = tf.compat.v1.metrics.auc(
+                roc, update_op = tf.compat.v1.metrics.auc( #tf.keras.metrics.AUC tf.compat.v1.metrics.auc
                     labels=labels_flat, predictions=pred_flat, curve='PR', summation_method='careful_interpolation')
                 with tf.control_dependencies([update_op]):
                     test_summaries.append(tf.compat.v1.summary.scalar("PR", roc))

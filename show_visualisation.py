@@ -27,6 +27,11 @@ parser.add_argument("--output_path",
 args = parser.parse_args()
 
 
+
+x = args.input.split("/", -1)
+input_filename = x[len(x)-1]
+print("split:", input_filename)
+
 vls = np.load("./" + args.input + ".npy")
 # print(vls.shape)
 # 2, 128, 32906
@@ -64,7 +69,7 @@ prepare_for_midi2 = vls[:, :, 0]
 prepare_for_midi_binary2 = np.where(prepare_for_midi > 0.1, 1, 0)
 track = pypianoroll.BinaryTrack(pianoroll=prepare_for_midi_binary2)
 multi_track = pypianoroll.Multitrack(tracks=[track])
-pypianoroll.write(args.output_path + args.input +
+pypianoroll.write(args.output_path + input_filename +
                   "_no_post.mid", multi_track)
 
 
@@ -220,8 +225,8 @@ improve_IOU = overlap.sum()/float(union.sum())
 if args.visualize != 0:
     print("Improve IoU", improve_IOU)
 
-vls = np.load("./" + args.input + ".npy")
 track = pypianoroll.BinaryTrack(pianoroll=post_processing_diff.T)
 multi_track = pypianoroll.Multitrack(tracks=[track])
-pypianoroll.write(args.output_path + args.input + "_final.mid", multi_track)
-print("&@OK@&")
+print()
+pypianoroll.write(args.output_path + input_filename + "_final.mid", multi_track)
+print("&@[create]", args.output_path + input_filename + "_final.mid@&")

@@ -15,13 +15,15 @@ from pathlib import Path
 # Execute this file:
 # python python_auto_execute.py --input Prelude_No_5_BWV_850_in_D_Major --denoise 0
 
+#python python_auto_execute.py --input ./static/Prelude_No_5_BWV_850_in_D_Major --denoise 0 --output_path ./static/
+
 
 def parser():
     parser = argparse.ArgumentParser(
         description="python auto execute")
     parser.add_argument("--input",
                         type = str,
-                        default = "Prelude_No_5_BWV_850_in_D_Major",
+                        default = "./static/Prelude_No_5_BWV_850_in_D_Major",
                         help = "given string of input filename of wav file")
     parser.add_argument("--denoise",
                         type = int,
@@ -29,7 +31,8 @@ def parser():
                         help = "If your audio file is record from real environment then give 1 to denoising.")
     parser.add_argument("--output_path",
                        type=str,
-                       help="The output midi file's folder") #"./output_midi/"
+                       default = './static/output/',
+                       help="The output midi file's folder") #'./static/'
     return parser.parse_args()
 
 
@@ -80,6 +83,7 @@ if int(args.denoise) != 0:
 process2 = None
 if int(args.denoise) == 0:
     # python make_dataset.py --input piano_ver_Pneumatic
+    # python make_dataset.py --input ./static/Prelude_No_5_BWV_850_in_D_Major
     denoise_cmd = 'python make_dataset.py ' + \
         '--input ' + input_filename
     process2 = subprocess.Popen(
@@ -102,6 +106,7 @@ print("result_of_table2:", result_of_table2)
 process3 = None
 if int(args.denoise) == 0:
     # python visualiser.py --input piano_ver_Pneumatic_reduction
+    # python visualiser.py --input ./static/Prelude_No_5_BWV_850_in_D_Major
     visualiser_cmd = 'python visualiser.py ' + \
         '--input ' + input_filename
     process3 = subprocess.Popen(
@@ -123,7 +128,9 @@ print("result_of_table3:", result_of_table3)
 # final result output ==============================================================
 process4 = None
 if int(args.denoise) == 0:
-    # python show_visualisation.py --input piano_ver_Pneumatic_reduction_visualisation
+    # python show_visualisation.py --input piano_ver_Pneumatic_reduction_visualisation 
+    # python show_visualisation.py --input ./static/Prelude_No_5_BWV_850_in_D_Major_visualisation --output_path ./static/
+    print('++python show_visualisation.py ' + '--input ' + input_filename + '_visualisation' + ' --output_path' + args.output_path)
     show_visualisation_cmd = 'python show_visualisation.py ' + \
         '--input ' + input_filename + '_visualisation'  + ' --output_path ' + args.output_path
     process4 = subprocess.Popen(
@@ -148,14 +155,17 @@ print("result_of_table4:", result_of_table4)
 end = time.time()
 print("Spend time: ", format(end-start))
 
+input_filename_list = input_filename.split("/", -1)
+output_filename = input_filename_list[len(input_filename_list)-1]
+
 if int(args.denoise) == 0:
-    my_file = Path(args.output_path + input_filename + "_visualisation_final.mid")
+    my_file = Path(args.output_path + output_filename + "_visualisation_final.mid")
     if my_file.is_file():
         print("Final output exist!")
     else:
         print("Final output not exist...")
 else:
-    my_file = Path(args.output_path + input_filename + "_reduction_visualisation_final.mid")
+    my_file = Path(args.output_path + output_filename + "_reduction_visualisation_final.mid")
     if my_file.is_file():
         print("Final output exist!")
     else:

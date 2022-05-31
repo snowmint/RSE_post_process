@@ -5,14 +5,14 @@
     <body>
         <p><b>{{ msg }}</b></p>
         <p style="font-size: 18px;">未經過後處理</p>
-        <midi-player src="../static/{{ output1 }}" sound-font></midi-player>
-        <form method="get" action="../static/{{ output1 }}">
+        <midi-player src="../static/output/{{ output1 }}" sound-font></midi-player>
+        <form method="get" action="../static/output/{{ output1 }}">
             <button type="submit">下載 MIDI 檔案</button>
         </form>
         </br>
         <p style="font-size: 18px;">有經過後處理</p>
-        <midi-player src="../static/{{ output2 }}" sound-font></midi-player>
-        <form method="get" action="../static/{{ output2 }}">
+        <midi-player src="../static/output/{{ output2 }}" sound-font></midi-player>
+        <form method="get" action="../static/output/{{ output2 }}">
             <button type="submit">下載 MIDI 檔案</button>
         </form>
     </body>

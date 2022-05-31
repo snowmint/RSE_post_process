@@ -6,10 +6,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script> -->
-    <link rel="stylesheet" href="/static/bootstrap.min.css">
-    <script src="/static/jquery.min.js"></script>
-    <script src="/static/bootstrap.min.js"></script>
-    <script src="/static/jquery.form.min.js"></script>
+    <link rel="stylesheet" href="/static/stylesheet/bootstrap.min.css">
+    <script src="/static/stylesheet/jquery.min.js"></script>
+    <script src="/static/stylesheet/bootstrap.min.js"></script>
+    <script src="/static/stylesheet/jquery.form.min.js"></script>
     <!--<script src="/static/js/jquery.form.js"></script>-->
   </head>
     <header align="center" style="font-family: Georgia, sans-serif; font-size: 2em; padding: 20px; color: white;background-color: rgb(61, 61, 61);">
@@ -25,7 +25,7 @@
                     <form id="uploadFileForm" action="/upload" method="post">
                         <div class="form-group">
                             <p>
-                                <label style="font-size: 20px;">上傳鋼琴演奏之 wav 檔</label>
+                                <label style="font-size: 20px;">上傳鋼琴演奏之 wav 檔 (超過 20MB 不會被上傳喔！)</label>
                                 <input style="font-size: 16px;" type="file" name="uploadFile" id="uploadFile" accept=".wav" />
                                 <br />
                                 <p style="font-size: 20px;"><b>如須降噪可勾選</b></p>
@@ -43,7 +43,7 @@
                         </div>
                         <div id="targetLayer" style="display:none;"></div>
                     </form>
-                    <div id="loader-icon" style="display:none;"><img src="/static/loader.gif" /></div>
+                    <div id="loader-icon" style="display:none;"><img src="/static/decoration/loader.gif" /></div>
                 </div>
             </div>
         </div>

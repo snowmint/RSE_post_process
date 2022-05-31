@@ -9,8 +9,8 @@ import subprocess
 app = Flask(__name__, template_folder='templates',
             static_folder='static', static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = 'static/'
-app.config['OUTPUT_FOLDER'] = './static/'
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max 50MB
+app.config['OUTPUT_FOLDER'] = './static/output/'
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # max 20MB
 ALLOWED_EXTENSIONS = set(['wav'])
 
 
@@ -38,8 +38,9 @@ def upload():
 
         # Run subprocess
         do_denoise = int('denoise_chkbox' in request.form)
+        print("./" + app.config['UPLOAD_FOLDER'] + input_filename_no_extension)
         output = subprocess.run(["python", "python_auto_execute.py", "--input",
-                                 input_filename_no_extension, "--denoise", str(do_denoise), "--output_path", app.config['OUTPUT_FOLDER']], capture_output=True)
+                                 "./" + app.config['UPLOAD_FOLDER'] + input_filename_no_extension, "--denoise", str(do_denoise), "--output_path", app.config['OUTPUT_FOLDER']], capture_output=True)
         print(output)
 
         if do_denoise == 1:
